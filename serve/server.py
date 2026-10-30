@@ -7167,7 +7167,9 @@ def make_handler(svc: Service):
             elif path in ("/v1/models", "/models"):
                 if self._authorized():
                     loaded = svc.loaded()
-                    model = {"id": svc.model, "object": "model", "status": {"value": "loaded"},
+                    # "source": "preset" as llama-server's router sends it on every entry: the model's arguments come
+                    # from a config, like a --models-preset section.  pi lists an unloaded model only with that mark.
+                    model = {"id": svc.model, "object": "model", "status": {"value": "loaded"}, "source": "preset",
                              "meta": {"n_ctx": svc.reported_ctx()},
                              "architecture": {"input_modalities": ["text", "image"] if svc.vision is not None else ["text"],
                                               "output_modalities": ["text"]}}

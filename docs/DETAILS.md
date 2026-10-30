@@ -352,8 +352,11 @@ curl -X POST -H "Content-Type: application/json" localhost:8080/unload
 ```
 
 `/health` says `"loaded"`, `/v1/models` lists the model as `unloaded` while it is, `/props` sets `is_sleeping` and the
-Monitor shows the state. Unloading ends the engine process and the image encoder, so their VRAM and RAM return at once. The
-model files stay in the OS file cache, so loading again takes seconds while that RAM is not needed elsewhere.
+Monitor shows the state. Each `/v1/models` entry carries `"source": "preset"`, as llama-server's router marks a model
+whose settings come from a preset file. pi keeps an unloaded model in its list only with that mark and
+`"models_autoload": true` from `/props`. Unloading ends the engine process and the image encoder, so their VRAM and RAM
+return at once. The model files stay in the OS file cache, so loading again takes seconds while that RAM is not needed
+elsewhere.
 
 **Lazy start.** `serve/server.py --engine strata --config strata-<model>.json --lazy` (or `"lazy_load": true`) starts the HTTP
 API without the engine or the vision encoder. The first generation request or `POST /load` loads them, including

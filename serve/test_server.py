@@ -3528,7 +3528,7 @@ class WebApp(unittest.TestCase):
                     self.assertEqual(len(models), 1)
                     model = models[0]
                     self.assertEqual(model["id"], svc.model)
-                    self.assertEqual(model["status"]["value"], "loaded")
+                    self.assertEqual((model["status"]["value"], model["source"]), ("loaded", "preset"))
                     self.assertEqual(model["meta"]["n_ctx"], 262144)
                     self.assertEqual(model["architecture"]["input_modalities"],
                                      ["text", "image"] if vision else ["text"])
