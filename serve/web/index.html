@@ -34,7 +34,7 @@
   <span class="st-pill" id="pill" data-state="idle" role="status" aria-live="polite">
     <span class="st-pill__dot"></span><span id="pill-text" data-i18n="pill.connecting">Connecting&hellip;</span></span>
   <button class="st-btn st-btn--secondary" id="unload-btn" type="button" title="Waiting for the server" disabled>&hellip;</button>
-  <button class="st-btn st-btn--icon" id="theme-btn" title="Light / dark" aria-label="Switch between light and dark" data-i18n-title="theme.title" data-i18n-label="theme.label">
+  <button class="st-btn st-btn--icon" id="theme-btn" title="Theme: auto, light or dark" aria-label="Switch the theme: auto, light or dark" data-i18n-title="theme.title" data-i18n-label="theme.label">
     <svg class="st-icon"><use id="theme-icon" href="web/sprite.svg#i-moon"/></svg></button>
 </header>
 
@@ -217,8 +217,13 @@
           <select class="st-input" id="lang"></select>
           <span class="muted small" data-i18n="settings.languageNote">Chat, its settings and the buttons above are translated. The Monitor, Images and About views are still in English.</span>
         </div>
-        <div class="toggle-row"><span>Dark theme</span>
-          <button class="st-toggle" id="dark-toggle" role="switch" aria-checked="false" aria-label="Dark theme"></button></div>
+        <div class="st-field">
+          <label class="st-label" for="theme-seg"><span data-i18n="settings.theme">Theme</span></label>
+          <div class="seg seg--3" id="theme-seg" role="radiogroup" aria-label="Theme" data-i18n-label="settings.theme">
+            <button type="button" role="radio" data-v="auto" data-i18n="theme.auto">Auto</button><button type="button" role="radio" data-v="light" data-i18n="theme.light">Light</button>
+            <button type="button" role="radio" data-v="dark" data-i18n="theme.dark">Dark</button>
+          </div>
+        </div>
         <p class="muted small">Chats, settings and the key are kept in this browser only.
           <a href="https://github.com/Niko1221/Strata" target="_blank" rel="noopener noreferrer">Strata on GitHub</a></p>
       </div>
