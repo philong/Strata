@@ -54,23 +54,32 @@ async function copyText(text, btn) {
 }
 
 // ------------------------------------------------------------------ theme and tabs
-// the system's theme until the user picks one (only a click is saved)
-function setTheme(t, save) {
-  document.documentElement.dataset.theme = t;
-  if (save) try { localStorage.setItem("strata.theme", t); } catch (e) { /* ignore */ }
-  $("theme-icon").setAttribute("href", `${SPRITE}#i-${t === "dark" ? "sun" : "moon"}`);
-  $("dark-toggle").setAttribute("aria-checked", String(t === "dark"));
+// the choice is auto (follow the system; nothing is saved), light or dark (saved in this browser)
+const THEMES = ["auto", "light", "dark"];
+const systemTheme = () => (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+function themeChoice() {
+  let saved = null;
+  try { saved = localStorage.getItem("strata.theme"); } catch (e) { /* ignore */ }
+  return saved === "light" || saved === "dark" ? saved : "auto";
+}
+function showTheme(choice) {
+  document.documentElement.dataset.theme = choice === "auto" ? systemTheme() : choice;
+  $("theme-icon").setAttribute("href", `${SPRITE}#i-${{auto: "theme-auto", light: "sun", dark: "moon"}[choice]}`);
+  for (const b of $("theme-seg").children) b.setAttribute("aria-checked", String(b.dataset.v === choice));
   refreshPreviews();                                  // the preview frames carry the page's colours
 }
-const flipTheme = () => setTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark", true);
-$("theme-btn").onclick = flipTheme;
-$("dark-toggle").onclick = flipTheme;
-setTheme(document.documentElement.dataset.theme || "light", false);
-matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
-  let saved = null;
-  try { saved = localStorage.getItem("strata.theme"); } catch (err) { /* ignore */ }
-  if (!saved) setTheme(e.matches ? "dark" : "light", false);
-});
+function setTheme(choice) {
+  try {
+    if (choice === "auto") localStorage.removeItem("strata.theme"); else localStorage.setItem("strata.theme", choice);
+  } catch (e) { /* ignore */ }
+  showTheme(choice);
+}
+let themeNow = themeChoice();                         // kept here too, so the choice holds where storage is blocked
+const pickTheme = (choice) => { themeNow = choice; setTheme(choice); };
+$("theme-btn").onclick = () => pickTheme(THEMES[(THEMES.indexOf(themeNow) + 1) % THEMES.length]);
+for (const b of $("theme-seg").children) b.onclick = () => pickTheme(b.dataset.v);
+showTheme(themeNow);
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { if (themeNow === "auto") showTheme("auto"); });
 
 let tab = "chat";
 const bootHash = location.hash;                       // the tab asked for in the address, kept for a tab that shows later (Experts)
